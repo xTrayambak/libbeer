@@ -33,6 +33,8 @@ proc `$`*(cv: ClientVersion): string =
 proc getChannelPath*(channel: string): string =
   let channel = channel.toLowerAscii()
 
+  assert channel.len > 0
+
   if channel == DEFAULT_CHANNEL:
     return "/"
 
@@ -55,9 +57,8 @@ proc getNewVersion*(bt: BinaryKind, channel, guid: string): Version =
     guid: guid
   )
 
-proc getLatestVersion*(bt: BinaryKind, channel: string): Option[ClientVersion] =
+proc getLatestVersion*(bt: BinaryKind, channel: string): Version =
   var 
-    cv: ClientVersion
     channel: string = deepCopy channel
 
   if channel.len < 1:
@@ -73,6 +74,4 @@ proc getLatestVersion*(bt: BinaryKind, channel: string): Option[ClientVersion] =
   let resp = http.getContent(urlStr)
   info "libbeer: onReqGet(): completed request!"
 
-  cv = resp.fromJson(ClientVersion)
-  
-  some(cv)
+  resp.fromJson(Version)

@@ -19,7 +19,7 @@ proc fetch*(version: Version, downloadDir: string): Manifest =
   
   let deployUrl = cdn & getChannelPath(version.channel) & version.guid
 
-  info "Fetching latest manifest for " & version.guid & " (" & deployUrl & ")"
+  info "libbeer: Fetching latest manifest for" & version.guid & " (" & deployUrl & MANIFEST_SUFFIX & ")"
 
   let 
     httpClient = newHTTPClient()
