@@ -1,4 +1,4 @@
-import std/[os, times, httpclient, strutils], zippy/ziparchives, checksums, ../../logging
+import std/[os, times, httpclient, strutils], zippy/ziparchives, checksums/md5, ../../logging
 
 const
   EXCLUDED_PACKAGES* = [
