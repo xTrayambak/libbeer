@@ -36,6 +36,7 @@ proc verify*(package: Package, src: string): bool =
 proc download*(package: Package, httpClient: HTTPClient, dest, deployUrl: string): bool =
   if fileExists(dest):
     info "libbeer: Package " & package.name & " already exists."
+    return true
 
   info "libbeer: Downloading package " & package.name
   
@@ -86,12 +87,19 @@ proc parsePackages*(manifest: seq[string]): seq[Package] =
     error "libbeer: Unhandled manifest version!"
     return pkgs
   
-  for i, pkg in manifest:
+  info "libbeer: " & $manifest
+  var i: int = 1
+  var totalSize: int = 0
+  while i < manifest.len - 4:
+    let pkg = manifest[i]
     if isPackageExcluded(pkg):
+      i += 4
       continue
 
     let pkgSize = manifest[i + 3].parseInt()
-    
+    totalSize += pkgSize
+    info "libbeer: Handle package \"" & pkg & "\" (" & $(pkgSize/1024/1024) & " MB)"
+
     pkgs.add(
       Package(
         name: pkg,
@@ -100,4 +108,7 @@ proc parsePackages*(manifest: seq[string]): seq[Package] =
       )
     )
 
+    i += 4
+  
+  info "libbeer: Downloading packages (" & $(totalSize/1024/1024) & " MB)"
   pkgs

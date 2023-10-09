@@ -1,4 +1,4 @@
-import std/[options, strutils, strformat, httpclient], 
+import std/[json, tables, options, strutils, strformat, httpclient], 
        jsony, ../logging, binarykind
 
 const
@@ -71,7 +71,12 @@ proc getLatestVersion*(bt: BinaryKind, channel: string): Version =
 
   let http = newHTTPClient(userAgent="Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/118.0")
   
-  let resp = http.getContent(urlStr)
+  let resp = http.getContent(urlStr).fromJson()
   info "libbeer: onReqGet(): completed request!"
+  info "libbeer: " & $resp
 
-  resp.fromJson(Version)
+  Version(
+    kind: bt,
+    channel: channel,
+    guid: resp["clientVersionUpload"].getStr()
+  )

@@ -60,7 +60,7 @@ const
     "WebView2RuntimeInstaller.zip":    ""
   }.toTable
 
-proc getDirectories*(bt: BinaryKind): TableRef[string, string] =
+proc getDirectories*(bt: BinaryKind): Table[string, string] =
   if bt == bkPlayer:
     return PLAYER_DIRECTORIES
   
